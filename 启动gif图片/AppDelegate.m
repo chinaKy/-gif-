@@ -7,7 +7,8 @@
 //
 
 #import "AppDelegate.h"
-
+#import "ViewController.h"
+#import "UIImage+GIF.h"
 @interface AppDelegate ()
 
 @end
@@ -17,6 +18,37 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    UIWindow *window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    window.rootViewController=[[ViewController alloc] init];
+    self.window=window;
+    [window makeKeyAndVisible];
+
+    UIImageView *imageView=[[UIImageView alloc]init];
+    imageView.image=[UIImage sd_animatedGIFNamed:@"test"];
+    imageView.frame=[UIScreen mainScreen].bounds;
+    imageView.layer.masksToBounds=YES;
+    imageView.backgroundColor=[UIColor blackColor];
+    imageView.contentMode=UIViewContentModeScaleAspectFit;
+    [[UIApplication sharedApplication].keyWindow addSubview:imageView];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
+        //隐藏
+         [UIView animateWithDuration:0.35 animations:^{
+             
+             imageView.transform=CGAffineTransformMakeScale(2, 2);
+             imageView.alpha=0.2;
+         } completion:^(BOOL finished) {
+              [imageView removeFromSuperview];
+         }];
+        
+    });
+
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    NSLog(@"%@",[url host]);
     return YES;
 }
 
